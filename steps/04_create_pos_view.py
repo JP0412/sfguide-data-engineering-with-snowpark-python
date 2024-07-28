@@ -9,11 +9,21 @@
 # SNOWFLAKE ADVANTAGE: Streams for incremental processing (CDC)
 # SNOWFLAKE ADVANTAGE: Streams on views
 
-
+import snowflake.connector
 from snowflake.snowpark import Session
 #import snowflake.snowpark.types as T
 import snowflake.snowpark.functions as F
 
+# JP added below
+con = snowflake.connector.connect(
+    account = "jcfhviz-kpb03549",
+    user = "joeparker0412",
+    password = "363H@lsey",
+    role = "HOL_ROLE",
+    warehouse = "HOL_WH",
+    database = "HOL_DB",
+    schema = "ANALYTICS"
+)
 
 def create_pos_view(session):
     session.use_schema('HARMONIZED')
@@ -107,7 +117,9 @@ def test_pos_view(session):
 # For local debugging
 if __name__ == "__main__":
     # Create a local Snowpark session
-    with Session.builder.getOrCreate() as session:
-        create_pos_view(session)
-        create_pos_view_stream(session)
+    #with Session.builder.getOrCreate() as session:
+    #JP added below line
+    session = Session.builder.configs({"connection": con}).create() 
+    create_pos_view(session)
+    create_pos_view_stream(session)
 #        test_pos_view(session)
