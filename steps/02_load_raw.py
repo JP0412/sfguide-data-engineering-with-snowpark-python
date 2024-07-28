@@ -6,10 +6,21 @@
 #------------------------------------------------------------------------------
 
 import time
+import snowflake.connector
 from snowflake.snowpark import Session
 #import snowflake.snowpark.types as T
 #import snowflake.snowpark.functions as F
 
+# JP added below
+con = snowflake.connector.connect(
+    account = "jcfhviz-kpb03549",
+    user = "joeparker0412",
+    password = "363H@lsey",
+    role = "HOL_ROLE",
+    warehouse = "HOL_WH",
+    database = "HOL_DB",
+    schema = "ANALYTICS"
+)
 
 POS_TABLES = ['country', 'franchise', 'location', 'menu', 'truck', 'order_header', 'order_detail']
 CUSTOMER_TABLES = ['customer_loyalty']
@@ -67,6 +78,8 @@ def validate_raw_tables(session):
 # For local debugging
 if __name__ == "__main__":
     # Create a local Snowpark session
-    with Session.builder.getOrCreate() as session:
-        load_all_raw_tables(session)
+    #with Session.builder.getOrCreate() as session:
+    #JP added below line
+    session = Session.builder.configs({"connection": con}).create() 
+    load_all_raw_tables(session)
 #        validate_raw_tables(session)
